@@ -1,0 +1,165 @@
+" 基本设置
+set nocompatible              " 关闭 Vi 兼容模式
+filetype plugin indent on     " 开启文件类型检测
+syntax on                     " 开启语法高亮
+set number                    " 显示行号
+set relativenumber            " 显示相对行号
+set cursorline                " 高亮当前行
+set wildmenu                  " 命令行补全
+set showmatch                 " 显示匹配的括号
+set incsearch                 " 增量搜索
+set hlsearch                  " 高亮搜索结果
+set ignorecase                " 搜索时忽略大小写
+set smartcase                 " 如果搜索包含大写字母，则切换到大小写敏感查找
+set clipboard=unnamed         " 使用系统剪贴板
+set backspace=indent,eol,start " 使退格键更加智能
+set scrolloff=5               " 光标移动到buffer的顶部和底部时保持5行距离
+
+" 缩进设置
+set autoindent                " 自动缩进
+set smartindent               " 智能缩进
+set expandtab                 " 用空格代替制表符
+set tabstop=4                 " 设置制表符宽度为4
+set shiftwidth=4              " 设置缩进的空格数为4
+set softtabstop=4             " 设置软制表符宽度为4
+
+" 编码设置
+set encoding=utf-8
+set fileencoding=utf-8
+set fileencodings=utf-8,ucs-bom,gb18030,gbk,gb2312,cp936
+
+
+" 插件管理器（使用vim-plug）
+call plug#begin('~/.vim/plugged')
+
+" 插件列表
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'preservim/nerdtree'
+Plug 'jiangmiao/auto-pairs'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+
+call plug#end()
+
+
+" coc.nvim 配置
+" Basic Setup
+set updatetime=100
+set shortmess+=c
+set encoding=utf-8
+set hidden
+set nobackup
+set nowritebackup
+set signcolumn=yes
+
+
+" 使用 Tab 键触发补全和导航补全菜单，使用 Shift+Tab 向上导航补全菜单。如果补全菜单不可见且当前光标前有空白字符，Tab 将插入一个制表符，否则触发补全
+" Use tab for trigger completion with characters ahead and navigate
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" 在有补全菜单的前提下，使用回车确认补全，而不是换行
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+
+" 查看函数定义，调用
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)       " 按 gd 跳转到定义
+nmap <silent> gy <Plug>(coc-type-definition)  " 按 gy 跳转到类型定义
+nmap <silent> gi <Plug>(coc-implementation)   " 按 gi 跳转到实现
+nmap <silent> gr <Plug>(coc-references)       " 按 gr 查看所有引用
+
+" 使用 <\ + h> 查看函数文件
+" Use Leader+h to show documentation in preview window.
+nnoremap <silent> <LEADER>h :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Highlighting相同单词
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" 符号重命名
+nmap <leader>rn <Plug>(coc-rename)
+
+" 格式化选中的代码
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " 针对特定文件类型设置格式化表达式
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  " 更新签名帮助
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" 应用代码操作到选中的代码块
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" 在光标位置应用代码操作
+nmap <leader>ac  <Plug>(coc-codeaction-cursor)
+" 在整个缓冲区应用代码操作
+nmap <leader>as  <Plug>(coc-codeaction-source)
+" 在当前行应用快速修复
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" 重构代码
+nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
+xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+
+" 运行当前行的 Code Lens 操作
+nmap <leader>cl  <Plug>(coc-codelens-action)
+
+" 用于选择函数和类的内部或整个函数和类
+xmap if <Plug>(coc-funcobj-i)    " 选中整个函数中的内容作为文本对象
+omap if <Plug>(coc-funcobj-i)    
+xmap af <Plug>(coc-funcobj-a)    " 选中整个函数及其周围的空白行作为文本对象
+omap af <Plug>(coc-funcobj-a)    
+xmap ic <Plug>(coc-classobj-i)   " 选中整个类中的内容作为文本对象
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)   " 选中整个类及其周围的空白行作为文本对象
+omap ac <Plug>(coc-classobj-a)
+
+" Nerdtree配置
+" autocmd vimenter * NERDTree  "自动开启Nerdtree
+let g:NERDTreeWinSize = 25 "设定 NERDTree 视窗大小
+let NERDTreeShowBookmarks=1  " 开启Nerdtree时自动显示Bookmarks
+"打开vim时如果没有文件自动打开NERDTree
+" autocmd vimenter * if !argc()|NERDTree|endif
+"当NERDTree为剩下的唯一窗口时自动关闭
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" 设置树的显示图标
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '-'
+let NERDTreeIgnore = ['\.pyc$']  " 过滤所有.pyc文件不显示
+let g:NERDTreeShowLineNumbers=0 " 不显示行号
+let g:NERDTreeHidden=1     "显示隐藏文件
+"Making it prettier
+let NERDTreeMinimalUI = 1
+let NERDTreeDirArrows = 1
+nnoremap <F3> :NERDTreeToggle<CR> " 开启/关闭nerdtree快捷键
