@@ -8,6 +8,12 @@
 ./setup_env.sh   
 ```
 
+或者直接运行指令
+
+```bash
+bash -c "$(curl -sS https://raw.githubusercontent.com/decajoin/.config/main/setup_env.sh)"
+```
+
 2. 配置按键映射
 
 ```bash
