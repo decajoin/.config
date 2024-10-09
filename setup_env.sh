@@ -27,26 +27,27 @@ fish -c "omf install neolambda"
 echo "Cloning your Vim configuration from GitHub..."
 curl -o ~/.vimrc https://raw.githubusercontent.com/decajoin/.config/main/vim/vimrc
 
-# 安装 vim-plug 
-echo "Installing vim-plug..." 
+# 安装 vim-plug
+echo "Installing vim-plug..."
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-
-# 配置 Tmux  
+# 配置 Tmux
 echo "Cloning your Tmux configuration from GitHub..."
-
-
 curl -o ~/.tmux.conf https://raw.githubusercontent.com/decajoin/.config/main/tmux/tmux.conf
 
-
-
-# 安装 Node.js   
-echo "Installing Node.js..."   
+# 安装 Node.js 和 npm
+echo "Installing Node.js..."
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt-get install -y nodejs
+sudo apt-get install -y npm
 
-
-
-sudo apt-get install -y nodejs   
+# 安装 Miniconda
+echo "Installing Miniconda..."
+mkdir -p ~/miniconda3
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+rm ~/miniconda3/miniconda.sh
+# 添加 Miniconda 到 PATH（需要再 fishrc 中修改用户名）
 
 echo "Configuration completed. Please restart your terminal."
 
