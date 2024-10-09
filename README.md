@@ -5,7 +5,7 @@
 1. 运行脚本：
 
 ```bash
-./setup_env.sh   
+./setup_env.sh
 ```
 
 或者直接运行指令
@@ -19,6 +19,8 @@ bash -c "$(curl -sS https://raw.githubusercontent.com/decajoin/.config/main/setu
 ```bash
 gnome-tweaks
 ```
+
+3. 在 fishrc 中更新 miniconda path 中的用户名
 
 > fish安装完成后会自动进入，此时输入`exit`退出即可
 >
